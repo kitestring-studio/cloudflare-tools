@@ -19,6 +19,7 @@ class Cloudflare_Extra {
         add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
         add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
         add_filter( 'cloudflare_purge_by_url', [ $this, 'filter_urls' ], 10, 2 );
+        add_action( 'admin_init', [ $this, 'register_additional_url_setting' ] );
 
     }
 
@@ -84,8 +85,14 @@ class Cloudflare_Extra {
         ];
         $query = new \WP_Query( $args );
 
-        // Display the list
+        // Create an instance of WP_List_Table and fetch items
+        $list_table = new Cloudflare_Extra_List_Table();
+        $list_table->prepare_items();
+
+        // Display the table
         echo '<h1>' . __( 'Cloudflare Tools', 'cloudflare-tools' ) . '</h1>';
+        $list_table->display();
+
         echo '<h2>' . __( 'Pages to Always Purge', 'cloudflare-tools' ) . '</h2>';
         echo '<ul>';
         while ( $query->have_posts() ) {
@@ -127,6 +134,20 @@ class Cloudflare_Extra {
         $additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
         $urls            = array_merge( $urls, $additional_urls );
 
+        return $urls;
+    }
+
+    public function register_additional_url_setting() {
+        register_setting( 'cloudflare-tools', 'cloudflare_tools_additional_urls', [
+            'sanitize_callback' => [ $this, 'sanitize_additional_urls' ]
+        ] );
+    }
+
+    public function sanitize_additional_urls( $urls ) {
+        $additional_url = isset( $_POST['additional_url'] ) ? esc_url_raw( $_POST['additional_url'] ) : '';
+        if ( $additional_url ) {
+            $urls[] = $additional_url;
+        }
         return $urls;
     }
 }
