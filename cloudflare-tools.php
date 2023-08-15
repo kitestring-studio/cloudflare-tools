@@ -10,16 +10,15 @@
  * Text Domain: cloudflare-tools
  */
 
-namespace KitestringStudio\CloudflareExtra;
+namespace KitestringStudio\CloudflareTools;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-//require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/includes/Cloudflare_Extra_List_Table.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-class Cloudflare_Extra {
+class CloudflareTools {
     public function __construct() {
         add_action( 'admin_init', [ $this, 'check_dependency' ] );
         add_action( 'add_meta_boxes', [ $this, 'register_meta_box' ] );
@@ -122,7 +121,7 @@ class Cloudflare_Extra {
         <?php
     }
 
-    public function filter_urls( $urls, $postId ) {
+    public function filter_urls( $urls, $postId ): array {
         // Add URLs from posts/pages with "always_purge" set
         $args  = [
             'post_type'      => [ 'post', 'page' ], // Add other custom post types if needed
@@ -155,9 +154,10 @@ class Cloudflare_Extra {
         if ( $additional_url ) {
             $urls[] = $additional_url;
         }
+
         return $urls;
     }
 }
 
 // Initialize the class
-$cloudflare_extra = new Cloudflare_Extra();
+$cloudflare_extra = new CloudflareTools();
