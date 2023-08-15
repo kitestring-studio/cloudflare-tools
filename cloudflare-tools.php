@@ -133,43 +133,6 @@ class CloudflareTools {
 		wp_reset_postdata();
 	}
 
-	private function display_additional_urls() {
-		$additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
-		echo '<h2>' . __( 'Additional URLs to Always Purge', 'cloudflare-tools' ) . '</h2>';
-		echo '<ul class="cloudflare-tools__additional-urls">';
-		foreach ( $additional_urls as $url ) {
-			echo "<li><a href='$url'>" . $url . "</a></li>";
-		}
-		echo '</ul>';
-	}
-
-	private function display_add_url_form() {
-		?>
-        <form method="post" action="options.php">
-			<?php
-			settings_fields( 'cloudflare-tools' );
-			do_settings_sections( 'cloudflare-tools' );
-			?>
-            <input type="text" name="additional_url" placeholder="<?php _e( 'Additional URL', 'cloudflare-tools' ); ?>">
-			<?php submit_button( __( 'Add Additional URL', 'cloudflare-tools' ) ); ?>
-        </form>
-
-		<?php
-	}
-
-
-	/**
-	 * @return array
-	 */
-	protected function get_query_args(): array {
-		return [
-			'post_type'      => [ 'post', 'page' ], // Add other custom post types if needed
-			'meta_key'       => $this->purge_key,
-			'meta_value'     => 'on',
-			'posts_per_page' => 20 // WP default
-		];
-	}
-
 	public function handle_delete_purge() {
 		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete' && isset( $_GET['post_id'] ) ) {
 			$post_id = intval( $_GET['post_id'] );
@@ -203,6 +166,18 @@ class CloudflareTools {
 		return $urls;
 	}
 
+	/**
+	 * @return array
+	 */
+	private function get_query_args(): array {
+		return [
+			'post_type'      => [ 'post', 'page' ], // Add other custom post types if needed
+			'meta_key'       => $this->purge_key,
+			'meta_value'     => 'on',
+			'posts_per_page' => 20 // WP default
+		];
+	}
+
 	public function register_additional_url_setting() {
 		register_setting( 'cloudflare-tools', 'cloudflare_tools_additional_urls', [
 			'sanitize_callback' => [ $this, 'sanitize_additional_urls' ]
@@ -216,6 +191,30 @@ class CloudflareTools {
 		}
 
 		return $urls;
+	}
+
+	private function display_additional_urls() {
+		$additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
+		echo '<h2>' . __( 'Additional URLs to Always Purge', 'cloudflare-tools' ) . '</h2>';
+		echo '<ul class="cloudflare-tools__additional-urls">';
+		foreach ( $additional_urls as $url ) {
+			echo "<li><a href='$url'>" . $url . "</a></li>";
+		}
+		echo '</ul>';
+	}
+
+	private function display_add_url_form() {
+		?>
+        <form method="post" action="options.php">
+			<?php
+			settings_fields( 'cloudflare-tools' );
+			do_settings_sections( 'cloudflare-tools' );
+			?>
+            <input type="text" name="additional_url" placeholder="<?php _e( 'Additional URL', 'cloudflare-tools' ); ?>">
+			<?php submit_button( __( 'Add Additional URL', 'cloudflare-tools' ) ); ?>
+        </form>
+
+		<?php
 	}
 }
 
