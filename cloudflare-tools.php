@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Cloudflare Extra
+ * Plugin Name: Cloudflare Tools
  * Plugin URI: https://kitestring.studio/plugins/cloudflare-tools
  * Description: An extension to the official Cloudflare plugin to mark pages and posts to be always purged from cache.
  * Author: Kitestring Studio
