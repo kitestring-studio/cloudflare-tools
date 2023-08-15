@@ -101,40 +101,49 @@ class CloudflareTools {
 	}
 
 	public function settings_page_content() {
+		echo '<div class="wrap">';
+		$this->display_notices();
 
-		if ( isset( $_GET['deleted'] ) && $_GET['deleted'] == 'true' ) {
+		$this->display_page_header();
+
+		$this->display_purge_list();
+
+//		$this->display_additional_urls();
+//        $this->display_add_url_form();
+		echo "</div><!-- /.wrap -->";
+	}
+
+	private function display_notices() {
+		if ( isset( $_GET['deleted'] ) && $_GET['deleted'] === 'true' ) {
 			echo '<div class="notice notice-success is-dismissible"><p>Item deleted successfully.</p></div>';
 		}
+	}
 
-		// Query for posts that have the "always_purge" option set
-		$args  = $this->get_query_args();
-		$query = new \WP_Query( $args );
+	private function display_page_header() {
+		echo '<h1>' . __( 'Cloudflare Tools', 'cloudflare-tools' ) . '</h1>';
+	}
 
-		// Create an instance of WP_List_Table and fetch items
+	private function display_purge_list() {
+//		$args       = $this->get_query_args();
+//		$query      = new \WP_Query( $args );
 		$list_table = new Cloudflare_Extra_List_Table( $this->purge_key );
 		$list_table->prepare_items();
-
-		// Display the table
-		echo '<div class="wrap">';
-		echo '<h1>' . __( 'Cloudflare Tools', 'cloudflare-tools' ) . '</h1>';
 		echo '<h2>' . __( 'Pages to Always Purge', 'cloudflare-tools' ) . '</h2>';
-
-
 		$list_table->display();
+		wp_reset_postdata();
+	}
 
+	private function display_additional_urls() {
+		$additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
 		echo '<h2>' . __( 'Additional URLs to Always Purge', 'cloudflare-tools' ) . '</h2>';
 		echo '<ul class="cloudflare-tools__additional-urls">';
-
-		$additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
-
 		foreach ( $additional_urls as $url ) {
 			echo "<li><a href='$url'>" . $url . "</a></li>";
 		}
-
 		echo '</ul>';
-		wp_reset_postdata();
+	}
 
-		// Add additional URLs form
+	private function display_add_url_form() {
 		?>
         <form method="post" action="options.php">
 			<?php
@@ -144,10 +153,10 @@ class CloudflareTools {
             <input type="text" name="additional_url" placeholder="<?php _e( 'Additional URL', 'cloudflare-tools' ); ?>">
 			<?php submit_button( __( 'Add Additional URL', 'cloudflare-tools' ) ); ?>
         </form>
-        </div>
-        <!-- /.wrap -->
+
 		<?php
 	}
+
 
 	/**
 	 * @return array
