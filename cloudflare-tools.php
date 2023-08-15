@@ -106,8 +106,8 @@ class CloudflareTools {
 
 		$this->display_purge_list();
 
-		$this->display_additional_urls();
-		$this->display_add_url_form();
+//		$this->display_additional_urls();
+//		$this->display_add_url_form();
 		echo "</div><!-- /.wrap -->";
 	}
 
