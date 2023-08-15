@@ -10,7 +10,14 @@
  * Text Domain: cloudflare-tools
  */
 
-namespace CloudflareExtra;
+namespace KitestringStudio\CloudflareExtra;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
+
+//require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/includes/Cloudflare_Extra_List_Table.php';
 
 class Cloudflare_Extra {
     public function __construct() {
@@ -123,7 +130,7 @@ class Cloudflare_Extra {
             'meta_value'     => 'on',
             'posts_per_page' => - 1
         ];
-        $query = new WP_Query( $args );
+        $query = new \WP_Query( $args );
         while ( $query->have_posts() ) {
             $query->the_post();
             $urls[] = get_permalink();

@@ -1,0 +1,16 @@
+{
+    "name": "kitestring-studio/cloudflare-tools",
+    "type": "wordpress-plugin",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "KitestringStudio\\CloudflareTools\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabe Herbert",
+            "email": "gh@gabeherbert.com"
+        }
+    ]
+}
