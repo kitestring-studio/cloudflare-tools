@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+  bootstrap="tests/bootstrap.php"
+  backupGlobals="false"
+  colors="true"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  processIsolation="false"
+  stopOnFailure="false">
+
+  <testsuites>
+    <testsuite name="Cloudflare Extra Plugin">
+      <file>./Test_Cloudflare_Extra.php</file>
+    </testsuite>
+  </testsuites>
+
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">../includes</directory>
+    </whitelist>
+  </filter>
+
+  <logging>
+    <log type="coverage-html" target="coverage" lowUpperBound="50" highLowerBound="80"/>
+    <log type="coverage-clover" target="coverage.xml"/>
+    <log type="junit" target="junit.xml" logIncompleteSkipped="false"/>
+  </logging>
+
+</phpunit>
