@@ -39,9 +39,9 @@ class Cloudflare_Extra_List_Table extends \WP_List_Table {
 
     public function get_columns() {
         return [
-            'title' => __( 'Title', 'cloudflare-tools' ),
-            'edit'  => __( 'Edit Post', 'cloudflare-tools' ),
-            'delete'  => __( 'Delete', 'cloudflare-tools' ),
+            'title'  => __( 'Title', 'cloudflare-tools' ),
+            'edit'   => __( 'Edit Post', 'cloudflare-tools' ),
+            'delete' => __( 'Delete', 'cloudflare-tools' ),
         ];
     }
 
@@ -55,11 +55,15 @@ class Cloudflare_Extra_List_Table extends \WP_List_Table {
                 return '';
         }
     }
-    function column_delete($item) {
+
+    function column_delete( $item ) {
         $delete_url = wp_nonce_url(
-            add_query_arg(array('action' => 'delete', 'post_id' => $item->ID), admin_url('admin.php?page=cloudflare-tools')),
+            add_query_arg( array( 'action'  => 'delete',
+                                  'post_id' => $item->ID
+            ), admin_url( 'admin.php?page=cloudflare-tools' ) ),
             'delete_purge_' . $item->ID
         );
+
         return '<a href="' . $delete_url . '" onclick="return confirm(\'Are you sure you want to delete this?\');">Delete</a>';
     }
 }

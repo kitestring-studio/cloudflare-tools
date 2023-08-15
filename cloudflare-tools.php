@@ -20,10 +20,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 class CloudflareTools {
 	private static $instance;
-    private string $purge_key = 'always_purge';
+	private string $purge_key = 'always_purge';
 
 
-    private function __construct() {
+	private function __construct() {
 	}
 
 	public static function get_instance() {
@@ -39,10 +39,10 @@ class CloudflareTools {
 
 		add_action( 'admin_menu', [ $this, 'add_settings_page' ] );
 
-        add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
+		add_action( 'save_post', [ $this, 'save_meta_box_data' ] );
 		add_action( 'add_meta_boxes', [ $this, 'register_meta_box' ] );
 
-        add_action( 'admin_init', [ $this, 'check_dependency' ] );
+		add_action( 'admin_init', [ $this, 'check_dependency' ] );
 		add_action( 'admin_init', [ $this, 'register_additional_url_setting' ] );
 		add_action( 'admin_init', [ $this, 'handle_delete_purge' ] );
 
@@ -86,7 +86,7 @@ class CloudflareTools {
 			return;
 		}
 
-		$always_purge = isset( $_POST[$this->purge_key] ) ? 'on' : 'off';
+		$always_purge = isset( $_POST[ $this->purge_key ] ) ? 'on' : 'off';
 		update_post_meta( $post_id, $this->purge_key, $always_purge );
 	}
 
@@ -102,7 +102,7 @@ class CloudflareTools {
 
 	public function settings_page_content() {
 
-		if (isset($_GET['deleted']) && $_GET['deleted'] == 'true') {
+		if ( isset( $_GET['deleted'] ) && $_GET['deleted'] == 'true' ) {
 			echo '<div class="notice notice-success is-dismissible"><p>Item deleted successfully.</p></div>';
 		}
 
@@ -115,7 +115,7 @@ class CloudflareTools {
 		$list_table->prepare_items();
 
 		// Display the table
-        echo '<div class="wrap">';
+		echo '<div class="wrap">';
 		echo '<h1>' . __( 'Cloudflare Tools', 'cloudflare-tools' ) . '</h1>';
 		echo '<h2>' . __( 'Pages to Always Purge', 'cloudflare-tools' ) . '</h2>';
 
@@ -125,11 +125,11 @@ class CloudflareTools {
 		echo '<h2>' . __( 'Additional URLs to Always Purge', 'cloudflare-tools' ) . '</h2>';
 		echo '<ul class="cloudflare-tools__additional-urls">';
 
-        $additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
+		$additional_urls = get_option( 'cloudflare_tools_additional_urls', [] );
 
-        foreach ($additional_urls as $url) {
-            echo "<li><a href='$url'>" . $url . "</a></li>";
-        }
+		foreach ( $additional_urls as $url ) {
+			echo "<li><a href='$url'>" . $url . "</a></li>";
+		}
 
 		echo '</ul>';
 		wp_reset_postdata();
@@ -149,26 +149,38 @@ class CloudflareTools {
 		<?php
 	}
 
+	/**
+	 * @return array
+	 */
+	protected function get_query_args(): array {
+		return [
+			'post_type'      => [ 'post', 'page' ], // Add other custom post types if needed
+			'meta_key'       => $this->purge_key,
+			'meta_value'     => 'on',
+			'posts_per_page' => 20 // WP default
+		];
+	}
+
 	public function handle_delete_purge() {
-		if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['post_id'])) {
-			$post_id = intval($_GET['post_id']);
-			if (!current_user_can('delete_others_posts') || !wp_verify_nonce($_GET['_wpnonce'], 'delete_purge_' . $post_id)) {
-				wp_die('You are not allowed to delete this item.');
+		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete' && isset( $_GET['post_id'] ) ) {
+			$post_id = intval( $_GET['post_id'] );
+			if ( ! current_user_can( 'delete_others_posts' ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'delete_purge_' . $post_id ) ) {
+				wp_die( 'You are not allowed to delete this item.' );
 			}
 
-			delete_post_meta($post_id, $this->purge_key);
+			delete_post_meta( $post_id, $this->purge_key );
 
 			// Redirect with success message
-			wp_redirect(add_query_arg('deleted', 'true', admin_url('admin.php?page=cloudflare-tools')));
+			wp_redirect( add_query_arg( 'deleted', 'true', admin_url( 'admin.php?page=cloudflare-tools' ) ) );
 			exit;
 		}
 	}
 
 	public function filter_urls( $urls, $postId ): array {
 		// Add URLs from posts/pages with "always_purge" set
-		$args  = $this->get_query_args();
-        $args['posts_per_page'] = -1; // Get all posts
-		$query = new \WP_Query( $args );
+		$args                   = $this->get_query_args();
+		$args['posts_per_page'] = - 1; // Get all posts
+		$query                  = new \WP_Query( $args );
 		while ( $query->have_posts() ) {
 			$query->the_post();
 			$urls[] = get_permalink();
@@ -188,25 +200,13 @@ class CloudflareTools {
 		] );
 	}
 
-	public function sanitize_additional_urls( $urls ) {
+	public function sanitize_additional_urls( array $urls ): array {
 		$additional_url = isset( $_POST['additional_url'] ) ? esc_url_raw( $_POST['additional_url'] ) : '';
 		if ( $additional_url ) {
 			$urls[] = $additional_url;
 		}
 
 		return $urls;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function get_query_args(): array {
-		return [
-			'post_type'      => [ 'post', 'page' ], // Add other custom post types if needed
-			'meta_key'       => $this->purge_key,
-			'meta_value'     => 'on',
-			'posts_per_page' => 20 // WP default
-		];
 	}
 }
 
