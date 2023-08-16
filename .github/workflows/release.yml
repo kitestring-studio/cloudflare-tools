@@ -1,0 +1,29 @@
+name: Create Release ZIP
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  create-zip:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install zip command
+      run: sudo apt-get install zip
+
+    - name: Create ZIP file
+      run: zip -r cloudflare-tools.zip . -x .git\* composer.json composer.lock .gitignore
+
+    - name: Upload ZIP to Release
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: cloudflare-tools.zip
+        asset_name: cloudflare-tools.zip
+        asset_content_type: application/zip
