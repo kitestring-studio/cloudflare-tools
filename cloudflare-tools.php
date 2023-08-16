@@ -60,7 +60,7 @@ class CloudflareTools {
 	public function register_meta_box() {
 		add_meta_box(
 			'cloudflare_tools_always_purge',
-			__( 'Always Purge This Page', 'cloudflare-tools' ),
+			__( 'Page Cache', 'cloudflare-tools' ),
 			[ $this, 'meta_box_content' ],
 			[ 'post', 'page' ], // Add other custom post types if needed
 			'side'
