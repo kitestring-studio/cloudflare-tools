@@ -24,4 +24,5 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: cloudflare-tools.zip
+        name: Create Release Zip
 
