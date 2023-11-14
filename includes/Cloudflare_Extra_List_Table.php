@@ -58,8 +58,9 @@ class Cloudflare_Extra_List_Table extends \WP_List_Table {
 
     function column_delete( $item ) {
         $delete_url = wp_nonce_url(
-            add_query_arg( array( 'action'  => 'delete',
-                                  'post_id' => $item->ID
+            add_query_arg( array(
+                'action'  => 'delete',
+                'post_id' => $item->ID
             ), admin_url( 'admin.php?page=cloudflare-tools' ) ),
             'delete_purge_' . $item->ID
         );
