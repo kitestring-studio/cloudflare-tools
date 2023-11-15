@@ -23,13 +23,15 @@ class Elementor_Cache_Purger {
         return self::$instance;
     }
 
-    public function add_row_action( $actions, $post ) {
-        if ( current_user_can( 'edit_others_posts', $post->ID ) ) {
-            $actions['purge_cache'] = '<a class="" href="' . wp_nonce_url( 'edit.php?action=purge_elementor_cache&post=' . $post->ID, 'purge_elementor_cache' ) . '">Purge Cache</a>';
+    public function add_row_action($actions, $post) {
+        if (current_user_can('edit_others_posts', $post->ID)) {
+            $aria_label = sprintf(__('Purge cache for "%s"', 'cloudflare-tools'), get_the_title($post->ID));
+            $actions['purge_cache'] = '<a href="' . wp_nonce_url('edit.php?action=purge_elementor_cache&post=' . $post->ID, 'purge_elementor_cache') . '" aria-label="' . esc_attr($aria_label) . '">Purge Cache</a>';
         }
 
         return $actions;
     }
+
 
     public function register_bulk_action( $bulk_actions ) {
         $bulk_actions['purge_elementor_cache_bulk'] = 'Purge from Cache';
