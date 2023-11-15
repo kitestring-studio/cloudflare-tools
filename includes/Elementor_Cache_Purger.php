@@ -29,11 +29,14 @@ class Elementor_Cache_Purger {
     public function add_row_action($actions, $post) {
         if (current_user_can('edit_others_posts', $post->ID)) {
             $aria_label = sprintf(__('Purge cache for "%s"', 'cloudflare-tools'), get_the_title($post->ID));
-            $actions['purge_cache'] = '<a href="' . wp_nonce_url('edit.php?action=purge_elementor_cache&post=' . $post->ID, 'purge_elementor_cache') . '" aria-label="' . esc_attr($aria_label) . '">Purge</a>';
+            $purge_url = admin_url('edit.php?action=purge_elementor_cache&post=' . $post->ID);
+            $nonce_url = wp_nonce_url($purge_url, 'purge_elementor_cache');
+            $actions['purge_cache'] = '<a href="' . esc_url($nonce_url) . '" aria-label="' . esc_attr($aria_label) . '">Purge</a>';
         }
 
         return $actions;
     }
+
 
 
     public function add_bulk_action( $bulk_actions ) {
