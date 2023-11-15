@@ -221,3 +221,8 @@ class CloudflareTools {
 // Initialize the class
 $cloudflare_tools = CloudflareTools::get_instance();
 $cloudflare_tools->init();
+if (is_admin() && ! wp_doing_ajax() ) {
+    Elementor_Cache_Purger::get_instance();
+}
+
+
