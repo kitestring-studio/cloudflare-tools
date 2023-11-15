@@ -9,7 +9,7 @@ class Elementor_Cache_Purger {
 
     private static $instance = null;
 
-    public function __construct() {
+    private function __construct() {
         add_filter( 'post_row_actions', [ $this, 'add_row_action' ], 10, 2 );
         add_filter( 'page_row_actions', [ $this, 'add_row_action' ], 10, 2 );
         add_filter( 'bulk_actions-edit-post', [ $this, 'add_bulk_action' ] );
