@@ -9,6 +9,7 @@ class Elementor_Cache_Purger {
 
     public function __construct() {
         add_filter( 'post_row_actions', [ $this, 'add_row_action' ], 10, 2 );
+        add_filter( 'page_row_actions', [ $this, 'add_row_action' ], 10, 2 );
         add_filter( 'bulk_actions-edit-post', [ $this, 'register_bulk_action' ] );
         add_filter( 'handle_bulk_actions-edit-post', [ $this, 'handle_bulk_action' ], 10, 3 );
         add_action( 'admin_notices', [ $this, 'show_notices' ] );
@@ -26,7 +27,7 @@ class Elementor_Cache_Purger {
     public function add_row_action($actions, $post) {
         if (current_user_can('edit_others_posts', $post->ID)) {
             $aria_label = sprintf(__('Purge cache for "%s"', 'cloudflare-tools'), get_the_title($post->ID));
-            $actions['purge_cache'] = '<a href="' . wp_nonce_url('edit.php?action=purge_elementor_cache&post=' . $post->ID, 'purge_elementor_cache') . '" aria-label="' . esc_attr($aria_label) . '">Purge Cache</a>';
+            $actions['purge_cache'] = '<a href="' . wp_nonce_url('edit.php?action=purge_elementor_cache&post=' . $post->ID, 'purge_elementor_cache') . '" aria-label="' . esc_attr($aria_label) . '">Purge</a>';
         }
 
         return $actions;
@@ -44,7 +45,13 @@ class Elementor_Cache_Purger {
             $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0;
             if ( $post_id && current_user_can( 'edit_others_posts', $post_id ) ) {
                 // Purge cache logic here
-                wp_update_post( [ 'ID' => $post_id ] );
+                wp_update_post( array(
+                    'ID' => $post_id,
+                    'post_modified' => current_time('mysql'),
+                    'post_modified_gmt' => current_time('mysql', 1),
+                ) );
+//                clean_post_cache( $post_id );
+
                 // Redirect back to posts list with a success message
                 wp_redirect( add_query_arg( 'purged_cache', 1, admin_url( 'edit.php' ) ) );
                 exit;
@@ -64,9 +71,7 @@ class Elementor_Cache_Purger {
             wp_update_post( [ 'ID' => $post_id ] );
         }
 
-        $redirect_to = add_query_arg( 'purged_cache', count( $post_ids ), $redirect_to );
-
-        return $redirect_to;
+        return add_query_arg( 'purged_cache', count( $post_ids ), $redirect_to );
     }
 
     public function show_notices() {
