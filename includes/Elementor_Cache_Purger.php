@@ -2,15 +2,17 @@
 
 namespace KitestringStudio\CloudflareTools;
 
+/**
+ * This class adds "Purge" buttons to the Page & Post list tables in the Dashboard.
+ */
 class Elementor_Cache_Purger {
 
     private static $instance = null;
 
-
     public function __construct() {
         add_filter( 'post_row_actions', [ $this, 'add_row_action' ], 10, 2 );
         add_filter( 'page_row_actions', [ $this, 'add_row_action' ], 10, 2 );
-        add_filter( 'bulk_actions-edit-post', [ $this, 'register_bulk_action' ] );
+        add_filter( 'bulk_actions-edit-post', [ $this, 'add_bulk_action' ] );
         add_filter( 'handle_bulk_actions-edit-post', [ $this, 'handle_bulk_action' ], 10, 3 );
         add_action( 'admin_notices', [ $this, 'show_notices' ] );
         add_action( 'admin_init', [ $this, 'handle_row_action' ] );
@@ -34,7 +36,7 @@ class Elementor_Cache_Purger {
     }
 
 
-    public function register_bulk_action( $bulk_actions ) {
+    public function add_bulk_action( $bulk_actions ) {
         $bulk_actions['purge_elementor_cache_bulk'] = 'Purge from Cache';
 
         return $bulk_actions;
@@ -45,6 +47,7 @@ class Elementor_Cache_Purger {
             $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0;
             if ( $post_id ) {
                 $this->purge_cache_for_post( $post_id );
+
                 // Redirect back to posts list with a success message
                 wp_redirect( add_query_arg( 'purged_cache', 1, admin_url( 'edit.php' ) ) );
                 exit;
@@ -66,15 +69,13 @@ class Elementor_Cache_Purger {
 
     private function purge_cache_for_post( $post_id ) {
         if ( current_user_can( 'edit_others_posts', $post_id ) ) {
-            // Purge cache logic here
-            // Elementor\Plugin::$instance->files_manager->clear_cache();
+
             // Update the post to trigger Elementor cache refresh
             wp_update_post( array(
                 'ID' => $post_id,
                 'post_modified' => current_time('mysql'),
                 'post_modified_gmt' => current_time('mysql', 1),
             ) );
-            // clean_post_cache( $post_id );
         }
     }
 
