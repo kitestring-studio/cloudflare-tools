@@ -43,15 +43,8 @@ class Elementor_Cache_Purger {
     public function handle_row_action() {
         if ( isset( $_GET['action'] ) && $_GET['action'] === 'purge_elementor_cache' && check_admin_referer( 'purge_elementor_cache' ) ) {
             $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0;
-            if ( $post_id && current_user_can( 'edit_others_posts', $post_id ) ) {
-                // Purge cache logic here
-                wp_update_post( array(
-                    'ID' => $post_id,
-                    'post_modified' => current_time('mysql'),
-                    'post_modified_gmt' => current_time('mysql', 1),
-                ) );
-//                clean_post_cache( $post_id );
-
+            if ( $post_id ) {
+                $this->purge_cache_for_post( $post_id );
                 // Redirect back to posts list with a success message
                 wp_redirect( add_query_arg( 'purged_cache', 1, admin_url( 'edit.php' ) ) );
                 exit;
@@ -65,13 +58,24 @@ class Elementor_Cache_Purger {
         }
 
         foreach ( $post_ids as $post_id ) {
-            // Purge cache logic here
-            // Elementor\Plugin::$instance->files_manager->clear_cache();
-            // Update the post to trigger Elementor cache refresh
-            wp_update_post( [ 'ID' => $post_id ] );
+            $this->purge_cache_for_post( $post_id );
         }
 
         return add_query_arg( 'purged_cache', count( $post_ids ), $redirect_to );
+    }
+
+    private function purge_cache_for_post( $post_id ) {
+        if ( current_user_can( 'edit_others_posts', $post_id ) ) {
+            // Purge cache logic here
+            // Elementor\Plugin::$instance->files_manager->clear_cache();
+            // Update the post to trigger Elementor cache refresh
+            wp_update_post( array(
+                'ID' => $post_id,
+                'post_modified' => current_time('mysql'),
+                'post_modified_gmt' => current_time('mysql', 1),
+            ) );
+            // clean_post_cache( $post_id );
+        }
     }
 
     public function show_notices() {
