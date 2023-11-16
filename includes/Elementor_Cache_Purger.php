@@ -5,7 +5,7 @@ namespace KitestringStudio\CloudflareTools;
 /**
  * This class adds "Purge" buttons to the Page & Post list tables in the Dashboard.
  */
-class Elementor_Cache_Purger {
+class Cloudflare_Cache_Purger {
 
     private static $instance = null;
 
@@ -19,8 +19,8 @@ class Elementor_Cache_Purger {
     }
 
     public static function get_instance() {
-        if ( self::$instance == null ) {
-            self::$instance = new Elementor_Cache_Purger();
+        if (self::$instance === null) {
+            self::$instance = new Cloudflare_Cache_Purger();
         }
 
         return self::$instance;
@@ -29,8 +29,8 @@ class Elementor_Cache_Purger {
     public function add_row_action($actions, $post) {
         if (current_user_can('edit_others_posts', $post->ID)) {
             $aria_label = sprintf(__('Purge cache for "%s"', 'cloudflare-tools'), get_the_title($post->ID));
-            $purge_url = admin_url('edit.php?action=purge_elementor_cache&post=' . $post->ID);
-            $nonce_url = wp_nonce_url($purge_url, 'purge_elementor_cache');
+            $purge_url = admin_url('edit.php?action=purge_cloudflare_cache&post=' . $post->ID);
+            $nonce_url = wp_nonce_url($purge_url, 'purge_cloudflare_cache');
             $actions['purge_cache'] = '<a href="' . esc_url($nonce_url) . '" aria-label="' . esc_attr($aria_label) . '">Purge</a>';
         }
 
@@ -40,13 +40,13 @@ class Elementor_Cache_Purger {
 
 
     public function add_bulk_action( $bulk_actions ) {
-        $bulk_actions['purge_elementor_cache_bulk'] = 'Purge from Cache';
+        $bulk_actions['purge_cloudflare_cache_bulk'] = 'Purge from Cache';
 
         return $bulk_actions;
     }
 
     public function handle_row_action() {
-        if ( isset( $_GET['action'] ) && $_GET['action'] === 'purge_elementor_cache' && check_admin_referer( 'purge_elementor_cache' ) ) {
+        if ( isset( $_GET['action'] ) && $_GET['action'] === 'purge_cloudflare_cache' && check_admin_referer( 'purge_cloudflare_cache' ) ) {
             $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : 0;
             if ( $post_id ) {
                 $this->purge_cache_for_post( $post_id );
@@ -59,7 +59,7 @@ class Elementor_Cache_Purger {
     }
 
     public function handle_bulk_action( $redirect_to, $doaction, $post_ids ) {
-        if ( $doaction !== 'purge_elementor_cache_bulk' ) {
+        if ( $doaction !== 'purge_cloudflare_cache_bulk' ) {
             return $redirect_to;
         }
 

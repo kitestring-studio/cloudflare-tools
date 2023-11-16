@@ -5,7 +5,7 @@
  * Description: An extension to the official Cloudflare plugin to mark pages and posts to be always purged from cache.
  * Author: Kitestring Studio
  * Author URI: https://kitestring.studio
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires PHP: 7.4
  * License: GPL-2.0+
  * Text Domain: cloudflare-tools
@@ -222,7 +222,7 @@ class CloudflareTools {
 $cloudflare_tools = CloudflareTools::get_instance();
 $cloudflare_tools->init();
 if (is_admin() && ! wp_doing_ajax() ) {
-    Elementor_Cache_Purger::get_instance();
+    Cloudflare_Cache_Purger::get_instance();
 }
 
 

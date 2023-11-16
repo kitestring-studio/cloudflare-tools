@@ -1,18 +1,19 @@
 {
-    "name": "kitestring-studio/cloudflare-tools",
-    "type": "wordpress-plugin",
-    "autoload": {
-        "psr-4": {
-            "KitestringStudio\\CloudflareTools\\": "includes/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Gabe Herbert",
-            "email": "gh@gabeherbert.com"
-        }
-    ],
-    "require-dev": {
-        "phpunit/phpunit": "^9.6"
+  "name": "kitestring-studio/cloudflare-tools",
+  "version": "1.0.1",
+  "type": "wordpress-plugin",
+  "autoload": {
+    "psr-4": {
+      "KitestringStudio\\CloudflareTools\\": "includes/"
     }
+  },
+  "authors": [
+    {
+      "name": "Gabe Herbert",
+      "email": "gh@gabeherbert.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  }
 }
