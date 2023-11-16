@@ -8,7 +8,14 @@ Cloudflare Tools is an extension to the official Cloudflare plugin, allowing use
 ## Features
 
 - **Always Purge Pages and Posts**: Mark specific pages and posts to be always purged from Cloudflare's cache.
-- 
+- Purge pages and posts from the edit table screen.
+
+## Changelog
+### 1.0.1
+- Add "Purge" button for pages & posts on the edit table screen
+### 1.0.0
+- Initial release.
+
 ## TODO
 - **Additional URLs**: Add custom URLs that will be purged from cache, for example, URLs that are not pages or posts.
 
