@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'kitestring-studio/cloudflare-tools',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => 'ba655364397af45478a23ca6a0085fbcdca8a79b',
+        'pretty_version' => '1.0.1.1',
+        'version' => '1.0.1.1',
+        'reference' => null,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'kitestring-studio/cloudflare-tools' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => 'ba655364397af45478a23ca6a0085fbcdca8a79b',
+            'pretty_version' => '1.0.1.1',
+            'version' => '1.0.1.1',
+            'reference' => null,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
